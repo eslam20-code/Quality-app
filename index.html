@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم - نظام متابعة جودة الدهان</title>
   <link rel="manifest" href="./manifest.json">
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./pwabuilder-sw.js')
+      .then(() => console.log('Service Worker Registered!'));
+  }
+  </script>
+  
   <style>
     :root {
       --bg-color: #f4f6f9;
