@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة ومتابعة جودة الدهان</title>
+  <style>
+    :root {
+      --primary-blue: #3b5998;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #334155;
+      --border-color: #cbd5e1;
+      --matching-color: #2e7d32;
+      --nonmatching-color: #c62828;
+      --total-color: #1565c0;
+      --btn-green: #10b981;
+      --btn-warning: #f59e0b;
+      --btn-danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-cancel {
+      background-color: #64748b;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .page-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .session-box {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 12px;
+      flex: 1;
+    }
+
+    .field-group label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .field-group input, .field-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus {
+      border-color: var(--primary-blue);
+    }
+
+    .input-matching {
+      background-color: #e8f5e9;
+      border-color: #a5d6a7 !important;
+      color: var(--matching-color);
+      font-weight: 700;
+    }
+
+    .input-nonmatching {
+      background-color: #ffebee;
+      border-color: #ef9a9a !important;
+      color: var(--nonmatching-color);
+      font-weight: 700;
+    }
+
+    .input-total {
+      background-color: #e3f2fd;
+      border-color: #90caf9 !important;
+      color: var(--total-color);
+      font-weight: 700;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px dashed var(--border-color);
+      margin: 15px 0;
+    }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    .defects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .defects-grid .field-group {
+      margin-bottom: 0;
+    }
+
+    .defects-grid input {
+      text-align: center;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--btn-green);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
+    .item-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .item-meta-bar {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .card-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: white;
+    }
+
+    .btn-edit-card { background-color: var(--btn-warning); }
+    .btn-delete-card { background-color: var(--btn-danger); }
+    .btn-save-card { background-color: var(--btn-green); }
+
+    .read-only-box {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .read-only-box div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .read-only-box .lbl { font-size: 0.75rem; color: #64748b; font-weight: 600; }
+    .read-only-box .val { font-size: 1.05rem; font-weight: 800; margin-top: 2px; }
+
+    .val.matching { color: var(--matching-color); }
+    .val.nonmatching { color: var(--nonmatching-color); }
+    .val.total { color: var(--total-color); }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    
+    <div class="top-header">
+      <a href="index.html" class="btn-cancel">إلغاء ورجوع</a>
+      <div class="page-title" id="page-title">تسجيل صنف جديد</div>
+    </div>
+
+    <!-- بيانات الجلسة -->
+    <div class="session-box" id="session-box">
+      <div class="session-row">
+        <div class="field-group">
+          <label>اسم مراقب الجودة:</label>
+          <input type="text" id="inspector-name" placeholder="أدخل اسم المراقب">
+        </div>
+        <div class="field-group">
+          <label>الوردية:</label>
+          <select id="shift-type">
+            <option value="الصباحية">الصباحية</option>
+            <option value="المسائية">المسائية</option>
+            <option value="الليلية">الليلية</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>تاريخ الفحص:</label>
+        <input type="date" id="record-date">
+      </div>
+    </div>
+
+    <!-- نموذج إضافة منتج جديد -->
+    <form id="single-add-form" style="display: none;">
+      <div class="field-group">
+        <label>الصنف</label>
+        <input type="text" id="product-name" placeholder="أدخل اسم الصنف" required>
+      </div>
+
+      <div class="field-group">
+        <label>مطابق (باللون الأخضر)</label>
+        <input type="number" id="matching-count" class="input-matching" min="0" placeholder="0">
+      </div>
+
+      <div class="field-group">
+        <label>غير مطابق (إجمالي العيوب باللون الأحمر)</label>
+        <input type="number" id="nonmatching-count" class="input-nonmatching" placeholder="0" readonly>
+      </div>
+
+      <div class="field-group">
+        <label>الإجمالي (مطابق + غير مطابق)</label>
+        <input type="number" id="total-count" class="input-total" placeholder="0" readonly>
+      </div>
+
+      <hr class="divider">
+      
+      <!-- تفاصيل العيوب (مرفوض) -->
+      <div class="section-title">تفاصيل العيوب (مرفوض):</div>
+      <div class="defects-grid">
+        <div class="field-group">
+          <label style="text-align:center;">بابلز</label>
+          <input type="number" id="bubbles-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">حقن</label>
+          <input type="number" id="injection-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">تشطيب</label>
+          <input type="number" id="finishing-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">دهان</label>
+          <input type="number" id="painting-count" min="0" placeholder="0">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- تفاصيل العيوب (معالجة) -->
+      <div class="section-title">تفاصيل العيوب (معالجة):</div>
+      <div class="defects-grid">
+        <div class="field-group">
+          <label style="text-align:center;">بابلز</label>
+          <input type="number" id="treat-bubbles-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">حقن</label>
+          <input type="number" id="treat-injection-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">تشطيب</label>
+          <input type="number" id="treat-finishing-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">دهان</label>
+          <input type="number" id="treat-painting-count" min="0" placeholder="0">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- تفاصيل العيوب (تحت الفحص) -->
+      <div class="section-title">تفاصيل العيوب (تحت الفحص):</div>
+      <div class="defects-grid">
+        <div class="field-group">
+          <label style="text-align:center;">بابلز</label>
+          <input type="number" id="under-bubbles-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">حقن</label>
+          <input type="number" id="under-injection-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">تشطيب</label>
+          <input type="number" id="under-finishing-count" min="0" placeholder="0">
+        </div>
+        <div class="field-group">
+          <label style="text-align:center;">دهان</label>
+          <input type="number" id="under-painting-count" min="0" placeholder="0">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">حفظ وإضافة للقائمة</button>
+    </form>
+
+    <!-- حاوية البحث وفلتر التاريخ المنفصل لعرض التقارير -->
+    <div id="search-filter-container" style="display: none; margin-bottom: 15px;">
+      <div class="field-group" style="margin-bottom:8px;">
+        <label>فلتر البحث:</label>
+        <input type="text" id="reports-search-input" placeholder="ابحث باسم الصنف أو اسم المراقب...">
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label>البحث بالتاريخ:</label>
+        <input type="date" id="reports-date-input">
+      </div>
+    </div>
+
+    <!-- حاوية عرض وتعديل الكروت المسجلة -->
+    <div id="items-container"></div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageMode = urlParams.get('mode') || (urlParams.get('action') === 'add' ? 'add' : 'view');
+
+      const pageTitle = document.getElementById('page-title');
+      const sessionBox = document.getElementById('session-box');
+      const singleAddForm = document.getElementById('single-add-form');
+      const itemsContainer = document.getElementById('items-container');
+      const searchFilterContainer = document.getElementById('search-filter-container');
+      const reportsSearchInput = document.getElementById('reports-search-input');
+      const reportsDateInput = document.getElementById('reports-date-input');
+
+      const inspectorInput = document.getElementById('inspector-name');
+      const shiftInput = document.getElementById('shift-type');
+      const dateInput = document.getElementById('record-date');
+
+      dateInput.value = new Date().toISOString().split('T')[0];
+      let products = JSON.parse(localStorage.getItem('paint_products')) || [];
+
+      if (pageMode === 'add') {
+        pageTitle.textContent = "تسجيل صنف جديد";
+        sessionBox.style.display = "flex";
+        singleAddForm.style.display = "block";
+        itemsContainer.style.display = "none";
+        searchFilterContainer.style.display = "none";
+      } else if (pageMode === 'edit') {
+        pageTitle.textContent = "تعديل المدخلات السابقة";
+        sessionBox.style.display = "none";
+        singleAddForm.style.display = "none";
+        itemsContainer.style.display = "block";
+        searchFilterContainer.style.display = "none";
+        renderEditableItems();
+      } else {
+        pageTitle.textContent = "استعراض التقارير والعمليات";
+        sessionBox.style.display = "none";
+        singleAddForm.style.display = "none";
+        itemsContainer.style.display = "block";
+        searchFilterContainer.style.display = "block";
+        renderViewOnlyItems();
+
+        const triggerFilter = () => {
+          renderViewOnlyItems(reportsSearchInput.value.trim(), reportsDateInput.value);
+        };
+
+        reportsSearchInput.addEventListener('input', triggerFilter);
+        reportsDateInput.addEventListener('change', triggerFilter);
+      }
+
+      // أجهزة النموذج
+      const matchingInput = document.getElementById('matching-count');
+      const nonMatchingInput = document.getElementById('nonmatching-count');
+      const totalInput = document.getElementById('total-count');
+
+      // عيوب مرفوضة
+      const bubblesInput = document.getElementById('bubbles-count');
+      const injectionInput = document.getElementById('injection-count');
+      const finishingInput = document.getElementById('finishing-count');
+      const paintingInput = document.getElementById('painting-count');
+
+      // عيوب معالجة
+      const treatBubblesInput = document.getElementById('treat-bubbles-count');
+      const treatInjectionInput = document.getElementById('treat-injection-count');
+      const treatFinishingInput = document.getElementById('treat-finishing-count');
+      const treatPaintingInput = document.getElementById('treat-painting-count');
+
+      // عيوب تحت الفحص
+      const underBubblesInput = document.getElementById('under-bubbles-count');
+      const underInjectionInput = document.getElementById('under-injection-count');
+      const underFinishingInput = document.getElementById('under-finishing-count');
+      const underPaintingInput = document.getElementById('under-painting-count');
+
+      function calculateAddTotals() {
+        const b = Number(bubblesInput.value) || 0;
+        const ij = Number(injectionInput.value) || 0;
+        const f = Number(finishingInput.value) || 0;
+        const p = Number(paintingInput.value) || 0;
+
+        const tb = Number(treatBubblesInput.value) || 0;
+        const tij = Number(treatInjectionInput.value) || 0;
+        const tf = Number(treatFinishingInput.value) || 0;
+        const tp = Number(treatPaintingInput.value) || 0;
+
+        const ub = Number(underBubblesInput.value) || 0;
+        const uij = Number(underInjectionInput.value) || 0;
+        const uf = Number(underFinishingInput.value) || 0;
+        const up = Number(underPaintingInput.value) || 0;
+
+        const m = Number(matchingInput.value) || 0;
+
+        const nonM = b + ij + f + p + tb + tij + tf + tp + ub + uij + uf + up;
+        nonMatchingInput.value = nonM;
+        totalInput.value = m + nonM;
+      }
+
+      [
+        matchingInput, 
+        bubblesInput, injectionInput, finishingInput, paintingInput,
+        treatBubblesInput, treatInjectionInput, treatFinishingInput, treatPaintingInput,
+        underBubblesInput, underInjectionInput, underFinishingInput, underPaintingInput
+      ].forEach(el => {
+        el.addEventListener('input', calculateAddTotals);
+      });
+
+      // حفظ صنف جديد
+      singleAddForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newProduct = {
+          id: Date.now(),
+          inspector: inspectorInput.value.trim() || 'غير محدد',
+          shift: shiftInput.value,
+          recordDate: dateInput.value,
+          name: document.getElementById('product-name').value.trim(),
+          matching: Number(matchingInput.value) || 0,
+          nonMatching: Number(nonMatchingInput.value) || 0,
+          total: Number(totalInput.value) || 0,
+          // مرفوض
+          bubbles: Number(bubblesInput.value) || 0,
+          injection: Number(injectionInput.value) || 0,
+          finishing: Number(finishingInput.value) || 0,
+          painting: Number(paintingInput.value) || 0,
+          // معالجة
+          treatBubbles: Number(treatBubblesInput.value) || 0,
+          treatInjection: Number(treatInjectionInput.value) || 0,
+          treatFinishing: Number(treatFinishingInput.value) || 0,
+          treatPainting: Number(treatPaintingInput.value) || 0,
+          // تحت الفحص
+          underBubbles: Number(underBubblesInput.value) || 0,
+          underInjection: Number(underInjectionInput.value) || 0,
+          underFinishing: Number(underFinishingInput.value) || 0,
+          underPainting: Number(underPaintingInput.value) || 0
+        };
+
+        products.unshift(newProduct);
+        localStorage.setItem('paint_products', JSON.stringify(products));
+        window.location.href = 'index.html';
+      });
+
+      // عرض التعديل
+      function renderEditableItems() {
+        itemsContainer.innerHTML = '';
+        if (products.length === 0) {
+          itemsContainer.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">لا توجد مدخلات مسجلة لتعديلها</div>`;
+          return;
+        }
+
+        products.forEach((p, idx) => {
+          const card = document.createElement('div');
+          card.className = 'item-card';
+
+          const isEditingThis = p._isEditing || false;
+
+          const metaHTML = `
+            <div class="item-meta-bar">
+              <span>👤 المراقب: ${p.inspector || 'غير محدد'}</span>
+              <span>⏰ ${p.shift || '-'}</span>
+              <span>📅 ${p.recordDate || '-'}</span>
+            </div>
+          `;
+
+          if (isEditingThis) {
+            card.innerHTML = `
+              <!-- تعديل بيانات الجلسة: المراقب، الوردية، والتاريخ -->
+              <div class="session-box" style="margin-bottom:12px;">
+                <div class="session-row">
+                  <div class="field-group">
+                    <label>اسم مراقب الجودة:</label>
+                    <input type="text" class="edit-inspector" value="${p.inspector || ''}" placeholder="أدخل اسم المراقب">
+                  </div>
+                  <div class="field-group">
+                    <label>الوردية:</label>
+                    <select class="edit-shift">
+                      <option value="الصباحية" ${p.shift === 'الصباحية' ? 'selected' : ''}>الصباحية</option>
+                      <option value="المسائية" ${p.shift === 'المسائية' ? 'selected' : ''}>المسائية</option>
+                      <option value="الليلية" ${p.shift === 'الليلية' ? 'selected' : ''}>الليلية</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field-group" style="margin-bottom:0;">
+                  <label>تاريخ الفحص:</label>
+                  <input type="date" class="edit-date" value="${p.recordDate || ''}">
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label>اسم الصنف</label>
+                <input type="text" class="edit-name" value="${p.name}">
+              </div>
+              <div class="field-group">
+                <label>مطابق</label>
+                <input type="number" class="edit-matching input-matching" value="${p.matching || ''}" placeholder="0">
+              </div>
+              <div class="field-group">
+                <label>غير مطابق</label>
+                <input type="number" class="edit-nonmatching input-nonmatching" value="${p.nonMatching}" readonly>
+              </div>
+              <div class="field-group">
+                <label>الإجمالي</label>
+                <input type="number" class="edit-total input-total" value="${p.total}" readonly>
+              </div>
+              
+              <hr class="divider">
+              <div class="section-title">تفاصيل العيوب (مرفوض):</div>
+              <div class="defects-grid">
+                <div class="field-group"><label>بابلز</label><input type="number" class="edit-bubbles" value="${p.bubbles || ''}" placeholder="0"></div>
+                <div class="field-group"><label>حقن</label><input type="number" class="edit-injection" value="${p.injection || ''}" placeholder="0"></div>
+                <div class="field-group"><label>تشطيب</label><input type="number" class="edit-finishing" value="${p.finishing || ''}" placeholder="0"></div>
+                <div class="field-group"><label>دهان</label><input type="number" class="edit-painting" value="${p.painting || ''}" placeholder="0"></div>
+              </div>
+
+              <hr class="divider">
+              <div class="section-title">تفاصيل العيوب (معالجة):</div>
+              <div class="defects-grid">
+                <div class="field-group"><label>بابلز</label><input type="number" class="edit-tbubbles" value="${p.treatBubbles || ''}" placeholder="0"></div>
+                <div class="field-group"><label>حقن</label><input type="number" class="edit-tinjection" value="${p.treatInjection || ''}" placeholder="0"></div>
+                <div class="field-group"><label>تشطيب</label><input type="number" class="edit-tfinishing" value="${p.treatFinishing || ''}" placeholder="0"></div>
+                <div class="field-group"><label>دهان</label><input type="number" class="edit-tpainting" value="${p.treatPainting || ''}" placeholder="0"></div>
+              </div>
+
+              <hr class="divider">
+              <div class="section-title">تفاصيل العيوب (تحت الفحص):</div>
+              <div class="defects-grid">
+                <div class="field-group"><label>بابلز</label><input type="number" class="edit-ububbles" value="${p.underBubbles || ''}" placeholder="0"></div>
+                <div class="field-group"><label>حقن</label><input type="number" class="edit-uinjection" value="${p.underInjection || ''}" placeholder="0"></div>
+                <div class="field-group"><label>تشطيب</label><input type="number" class="edit-ufinishing" value="${p.underFinishing || ''}" placeholder="0"></div>
+                <div class="field-group"><label>دهان</label><input type="number" class="edit-upainting" value="${p.underPainting || ''}" placeholder="0"></div>
+              </div>
+
+              <div class="card-actions-row">
+                <button type="button" class="btn-action btn-save-card btn-save">💾 حفظ التعديل</button>
+                <button type="button" class="btn-action btn-delete-card btn-delete">🗑️ حذف</button>
+              </div>
+            `;
+
+            const inInspector = card.querySelector('.edit-inspector');
+            const inShift = card.querySelector('.edit-shift');
+            const inDate = card.querySelector('.edit-date');
+
+            const inName = card.querySelector('.edit-name');
+            const inMatch = card.querySelector('.edit-matching');
+            const inNonMatch = card.querySelector('.edit-nonmatching');
+            const inTot = card.querySelector('.edit-total');
+
+            const inBub = card.querySelector('.edit-bubbles');
+            const inInj = card.querySelector('.edit-injection');
+            const inFin = card.querySelector('.edit-finishing');
+            const inPnt = card.querySelector('.edit-painting');
+
+            const inTBub = card.querySelector('.edit-tbubbles');
+            const inTInj = card.querySelector('.edit-tinjection');
+            const inTFin = card.querySelector('.edit-tfinishing');
+            const inTPnt = card.querySelector('.edit-tpainting');
+
+            const inUBub = card.querySelector('.edit-ububbles');
+            const inUInj = card.querySelector('.edit-uinjection');
+            const inUFin = card.querySelector('.edit-ufinishing');
+            const inUPnt = card.querySelector('.edit-upainting');
+
+            const calcCard = () => {
+              const nm = (Number(inBub.value)||0) + (Number(inInj.value)||0) + (Number(inFin.value)||0) + (Number(inPnt.value)||0) +
+                         (Number(inTBub.value)||0) + (Number(inTInj.value)||0) + (Number(inTFin.value)||0) + (Number(inTPnt.value)||0) +
+                         (Number(inUBub.value)||0) + (Number(inUInj.value)||0) + (Number(inUFin.value)||0) + (Number(inUPnt.value)||0);
+              inNonMatch.value = nm;
+              inTot.value = (Number(inMatch.value)||0) + nm;
+            };
+
+            [inMatch, inBub, inInj, inFin, inPnt, inTBub, inTInj, inTFin, inTPnt, inUBub, inUInj, inUFin, inUPnt].forEach(e => e.addEventListener('input', calcCard));
+
+            card.querySelector('.btn-save').addEventListener('click', () => {
+              p.inspector = inInspector.value.trim() || 'غير محدد';
+              p.shift = inShift.value;
+              p.recordDate = inDate.value;
+
+              p.name = inName.value.trim() || 'صنف بدون اسم';
+              p.matching = Number(inMatch.value) || 0;
+              p.bubbles = Number(inBub.value) || 0;
+              p.injection = Number(inInj.value) || 0;
+              p.finishing = Number(inFin.value) || 0;
+              p.painting = Number(inPnt.value) || 0;
+
+              p.treatBubbles = Number(inTBub.value) || 0;
+              p.treatInjection = Number(inTInj.value) || 0;
+              p.treatFinishing = Number(inTFin.value) || 0;
+              p.treatPainting = Number(inTPnt.value) || 0;
+
+              p.underBubbles = Number(inUBub.value) || 0;
+              p.underInjection = Number(inUInj.value) || 0;
+              p.underFinishing = Number(inUFin.value) || 0;
+              p.underPainting = Number(inUPnt.value) || 0;
+
+              p.nonMatching = p.bubbles + p.injection + p.finishing + p.painting + 
+                              p.treatBubbles + p.treatInjection + p.treatFinishing + p.treatPainting +
+                              p.underBubbles + p.underInjection + p.underFinishing + p.underPainting;
+              p.total = p.matching + p.nonMatching;
+              p._isEditing = false;
+
+              localStorage.setItem('paint_products', JSON.stringify(products));
+              renderEditableItems();
+            });
+
+            card.querySelector('.btn-delete').addEventListener('click', () => {
+              products.splice(idx, 1);
+              localStorage.setItem('paint_products', JSON.stringify(products));
+              renderEditableItems();
+            });
+
+          } else {
+            card.innerHTML = `
+              ${metaHTML}
+              <div style="font-weight:800; font-size:1.05rem; color:#0f172a; margin-bottom:8px;">${p.name || 'صنف بدون اسم'}</div>
+              
+              <div class="read-only-box">
+                <div><span class="lbl">المطابق</span><span class="val matching">${p.matching}</span></div>
+                <div><span class="lbl">غير المطابق</span><span class="val nonmatching">${p.nonMatching}</span></div>
+                <div><span class="lbl">الإجمالي</span><span class="val total">${p.total}</span></div>
+              </div>
+
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:4px;">
+                <strong>المرفوض:</strong> (بابلز: ${p.bubbles||0} | حقن: ${p.injection||0} | تشطيب: ${p.finishing||0} | دهان: ${p.painting||0})
+              </div>
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:4px;">
+                <strong>المعالجة:</strong> (بابلز: ${p.treatBubbles||0} | حقن: ${p.treatInjection||0} | تشطيب: ${p.treatFinishing||0} | دهان: ${p.treatPainting||0})
+              </div>
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">
+                <strong>تحت الفحص:</strong> (بابلز: ${p.underBubbles||0} | حقن: ${p.underInjection||0} | تشطيب: ${p.underFinishing||0} | دهان: ${p.underPainting||0})
+              </div>
+
+              <div class="card-actions-row">
+                <button type="button" class="btn-action btn-edit-card btn-edit">✏️ تعديل هذا الصنف</button>
+                <button type="button" class="btn-action btn-delete-card btn-delete">🗑️ حذف</button>
+              </div>
+            `;
+
+            card.querySelector('.btn-edit').addEventListener('click', () => {
+              p._isEditing = true;
+              renderEditableItems();
+            });
+
+            card.querySelector('.btn-delete').addEventListener('click', () => {
+              products.splice(idx, 1);
+              localStorage.setItem('paint_products', JSON.stringify(products));
+              renderEditableItems();
+            });
+          }
+
+          itemsContainer.appendChild(card);
+        });
+      }
+
+      // عرض قراءة فقط مع تصفية البحث النصي والتاريخ بشكل منفصل تماماً
+      function renderViewOnlyItems(filterText = '', filterDate = '') {
+        itemsContainer.innerHTML = '';
+        
+        const filteredProducts = products.filter(p => {
+          // فلترة البحث النصي (اسم الصنف أو اسم المراقب فقط)
+          if (filterText) {
+            const searchLower = filterText.toLowerCase();
+            const nameMatch = p.name && p.name.toLowerCase().includes(searchLower);
+            const inspectorMatch = p.inspector && p.inspector.toLowerCase().includes(searchLower);
+            if (!nameMatch && !inspectorMatch) return false;
+          }
+
+          // فلترة التاريخ المنفصل
+          if (filterDate) {
+            if (p.recordDate !== filterDate) return false;
+          }
+
+          return true;
+        });
+
+        if (filteredProducts.length === 0) {
+          itemsContainer.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">لا توجد تقارير مطابقة للبحث أو التاريخ المحدد</div>`;
+          return;
+        }
+
+        filteredProducts.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'item-card';
+
+          card.innerHTML = `
+            <div class="item-meta-bar">
+              <span>👤 المراقب: ${p.inspector || 'غير محدد'}</span>
+              <span>⏰ ${p.shift || '-'}</span>
+              <span>📅 ${p.recordDate || '-'}</span>
+            </div>
+            <div style="font-weight:800; font-size:1.05rem; color:#0f172a; margin-bottom:8px;">${p.name || 'صنف بدون اسم'}</div>
+            
+            <div class="read-only-box">
+              <div><span class="lbl">المطابق</span><span class="val matching">${p.matching}</span></div>
+              <div><span class="lbl">غير المطابق</span><span class="val nonmatching">${p.nonMatching}</span></div>
+              <div><span class="lbl">الإجمالي</span><span class="val total">${p.total}</span></div>
+            </div>
+
+            <div style="font-size:0.8rem; color:#64748b; margin-bottom:4px;">
+              <strong>المرفوض:</strong> (بابلز: ${p.bubbles||0} | حقن: ${p.injection||0} | تشطيب: ${p.finishing||0} | دهان: ${p.painting||0})
+            </div>
+            <div style="font-size:0.8rem; color:#64748b; margin-bottom:4px;">
+              <strong>المعالجة:</strong> (بابلز: ${p.treatBubbles||0} | حقن: ${p.treatInjection||0} | تشطيب: ${p.treatFinishing||0} | دهان: ${p.treatPainting||0})
+            </div>
+            <div style="font-size:0.8rem; color:#64748b;">
+              <strong>تحت الفحص:</strong> (بابلز: ${p.underBubbles||0} | حقن: ${p.underInjection||0} | تشطيب: ${p.underFinishing||0} | دهان: ${p.underPainting||0})
+            </div>
+          `;
+          itemsContainer.appendChild(card);
+        });
+      }
+
+    });
+  </script>
+
+</body>
+</html>
